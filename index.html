@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How Often Do New AI Models Come Out?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Standalone workshop slide. Pinned to the light palette so it matches a light deck; add #dark to the URL for the dark one.
+   Everything is sized in cqw (1% of the slide's width), so it looks identical at any embed size. */
+:root{
+  --ground:#f1f3f6; --panel:#fbfbfd; --panel-2:#e9ecf1; --rule:#d3d8e0; --rule-soft:#e2e6ec;
+  --ink:#101620; --ink-2:#3f4a59; --ink-3:#6d7787; --accent:#2a78d6; --hot:#eb6834; --lane:#e6eaf0; --lane-2:#eef1f5;
+  --display:Chivo,"Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --ground:#0d1015; --panel:#151920; --panel-2:#1c212a; --rule:#2c333e; --rule-soft:#232932;
+  --ink:#e9ecf2; --ink-2:#a7b0be; --ink-3:#78828f; --accent:#3987e5; --hot:#d95926; --lane:#1e242d; --lane-2:#191e26;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%; margin:0}
+body{background:var(--panel); color:var(--ink); font-family:var(--mono); -webkit-font-smoothing:antialiased;
+  display:flex; align-items:center; justify-content:center; overflow:hidden}
+button{font:inherit; color:inherit; cursor:pointer}
+:where(button):focus-visible{outline:.2cqw solid var(--accent); outline-offset:.2cqw}
+
+.box{container-type:inline-size; width:min(100vw, 177.78vh)}
+.slide{
+  --D:.72cqw; --G:.19cqw; --rows:13;
+  aspect-ratio:16/9; width:100%;
+  background:var(--panel);
+  padding:2.4cqw 3.6cqw 2cqw;
+  display:grid; grid-template-rows:auto 1fr auto auto; gap:1.3cqw;
+}
+
+.s-head{display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:2cqw}
+.s-kick{font-size:1.1cqw; color:var(--ink-3); margin:0 0 .6cqw}
+.s-title{font-family:var(--display); font-weight:900; font-size:2.9cqw; line-height:1; letter-spacing:-.025em; margin:0; text-wrap:balance; max-width:22ch}
+.years{display:flex; gap:.4cqw; align-items:center}
+.yr,.play{
+  font-family:var(--display); font-weight:700; font-size:1.55cqw; line-height:1; padding:.6cqw 1.1cqw;
+  border:.08cqw solid var(--rule); background:var(--panel-2); color:var(--ink-2); border-radius:.25cqw; font-variant-numeric:tabular-nums;
+}
+.yr:hover,.play:hover{color:var(--ink); border-color:var(--ink-3)}
+.yr[aria-pressed="true"]{background:var(--ink); color:var(--panel); border-color:var(--ink)}
+.play{background:transparent; margin-left:.5cqw; display:flex; align-items:center; gap:.5cqw}
+.play svg{width:1cqw; height:1cqw; fill:currentColor}
+
+.s-main{display:grid; grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr); gap:4.5cqw; align-items:center}
+.ans-when{font-size:1.35cqw; color:var(--ink-3); margin:0}
+.ans-big{font-family:var(--display); font-weight:900; font-size:3.8cqw; line-height:.95; letter-spacing:-.03em; margin:.4cqw 0 1cqw; text-wrap:balance}
+.ans-sub{font-family:var(--serif); font-size:1.6cqw; line-height:1.35; color:var(--ink-2); margin:0; max-width:28ch}
+.ans-sub b{color:var(--ink); font-weight:600}
+.ans-x{font-size:1.25cqw; line-height:1.4; color:var(--ink-3); margin:.9cqw 0 0; padding-top:.8cqw; border-top:.08cqw dashed var(--rule)}
+.swap{animation:swapIn .45s ease-out backwards}
+@keyframes swapIn{from{opacity:.15; transform:translateY(.5cqw)} to{opacity:1; transform:none}}
+
+.s-h3{font-family:var(--display); font-weight:700; font-size:1.55cqw; margin:0}
+.waits{display:flex; flex-direction:column; gap:1.3cqw; min-width:0}
+.wbars{display:grid; grid-template-columns:auto minmax(0,1fr); column-gap:1.2cqw; row-gap:.75cqw; align-items:center}
+.wgrid{grid-column:2; grid-row:1 / span 4; position:relative; align-self:stretch; pointer-events:none}
+.wtick{position:absolute; top:-.4cqw; bottom:-.4cqw; border-left:.08cqw dashed var(--rule)}
+.wy{font-family:var(--display); font-weight:700; font-size:1.4cqw; color:var(--ink-3); font-variant-numeric:tabular-nums}
+.wtrack{grid-column:2; position:relative; height:2.4cqw}
+.wfill{position:absolute; left:0; top:0; bottom:0; background:var(--lane); border-radius:.15cqw; transition:width .6s ease, background-color .3s}
+.wlbl{position:absolute; top:50%; transform:translateY(-50%); white-space:nowrap; font-size:1.2cqw; color:var(--ink-3); font-variant-numeric:tabular-nums}
+.on .wy, .wy.on{color:var(--ink)}
+.wtrack.on .wfill{background:var(--accent)}
+.wtrack.on .wlbl{color:var(--ink); font-weight:600}
+.wscale{grid-column:2; position:relative; height:1.5cqw}
+.wscale span{position:absolute; top:0; transform:translateX(-50%); font-size:1.05cqw; color:var(--ink-3); white-space:nowrap}
+.wscale span:last-child{transform:translateX(-100%)}
+
+.s-dots{display:flex; flex-direction:column; gap:.8cqw; min-width:0}
+.dots-head{display:flex; justify-content:space-between; align-items:baseline; gap:2cqw}
+.pick{font-size:1.25cqw; color:var(--ink-3)}
+.pick b{color:var(--ink); font-weight:600}
+.months{display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:.6cqw}
+.mon{display:flex; flex-direction:column; align-items:center; gap:.5cqw; min-width:0}
+.stack{width:100%; height:calc(var(--D)*var(--rows) + var(--G)*(var(--rows) - 1) + .5cqw);
+  display:flex; flex-direction:column-reverse; align-items:center; gap:var(--G);
+  border-bottom:.08cqw solid var(--rule); padding-bottom:.5cqw}
+.mon.future .stack{background:repeating-linear-gradient(135deg, transparent 0 .4cqw, var(--lane-2) .4cqw .8cqw); border-bottom-style:dashed}
+.mlbl{font-size:1.05cqw; color:var(--ink-3)}
+.mon.future .mlbl{opacity:.6}
+.d2{width:var(--D); height:var(--D); border-radius:50%; border:0; padding:0; flex:none; background:var(--accent);
+  transition:transform .15s; animation:dropIn .4s cubic-bezier(.2,.8,.3,1.2) backwards}
+.d2:hover,.d2.sel{transform:scale(1.45); background:var(--hot)}
+@keyframes dropIn{from{opacity:0; transform:translateY(-1.4cqw)} to{opacity:1; transform:none}}
+
+.s-foot{font-size:.98cqw; line-height:1.45; color:var(--ink-3); margin:0; padding-top:.8cqw; border-top:.08cqw solid var(--rule-soft)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+</head>
+<body>
+<div class="box">
+  <main class="slide" aria-label="How often does a new AI model come out?">
+    <div class="s-head">
+      <div>
+        <p class="s-kick">The big AI companies, 2023 to 2026</p>
+        <h1 class="s-title">How often does a new AI model come out?</h1>
+      </div>
+      <div class="years" id="s-years" role="group" aria-label="Choose a year">
+        <button class="yr" data-y="2023" aria-pressed="true">2023</button>
+        <button class="yr" data-y="2024" aria-pressed="false">2024</button>
+        <button class="yr" data-y="2025" aria-pressed="false">2025</button>
+        <button class="yr" data-y="2026" aria-pressed="false">2026</button>
+        <button class="play" id="s-play" aria-label="Play through the years"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 .5 9.5 5 1 9.5Z"/></svg><span>Play</span></button>
+      </div>
+    </div>
+
+    <div class="s-main">
+      <div id="s-answer" aria-live="polite"></div>
+      <div class="waits">
+        <h2 class="s-h3">How long you wait for the next one</h2>
+        <div class="wbars" id="s-wbars"></div>
+      </div>
+    </div>
+
+    <div class="s-dots">
+      <div class="dots-head">
+        <h2 class="s-h3">Every dot is one new model</h2>
+        <span class="pick" id="s-pick">Point at a dot to see which model it was</span>
+      </div>
+      <div class="months" id="s-months"></div>
+    </div>
+
+    <p class="s-foot">Counted: new text and reasoning models from eight companies (OpenAI, Anthropic, Google, Meta, xAI, Alibaba&rsquo;s Qwen, Mistral and DeepSeek) up to 8 Oct 2026. Image, video and voice models are left out. 147 releases in total since ChatGPT on 30 Nov 2022.</p>
+  </main>
+</div>
+
+<script>
+const RAW = [{"d":"2022-11-30","l":"OpenAI","m":"GPT-3.5 / ChatGPT"},{"d":"2023-02-24","l":"Meta","m":"LLaMA 1"},{"d":"2023-03-01","l":"OpenAI","m":"GPT-3.5-turbo"},{"d":"2023-03-14","l":"Anthropic","m":"Claude 1"},{"d":"2023-03-14","l":"OpenAI","m":"GPT-4"},{"d":"2023-07-11","l":"Anthropic","m":"Claude 2"},{"d":"2023-07-18","l":"Meta","m":"Llama 2"},{"d":"2023-08-03","l":"Qwen","m":"Qwen-7B"},{"d":"2023-08-24","l":"Meta","m":"Code Llama"},{"d":"2023-09-27","l":"Mistral","m":"Mistral 7B"},{"d":"2023-11-04","l":"xAI","m":"Grok 1"},{"d":"2023-11-06","l":"OpenAI","m":"GPT-4 Turbo"},{"d":"2023-11-21","l":"Anthropic","m":"Claude 2.1"},{"d":"2023-11-29","l":"DeepSeek","m":"DeepSeek LLM (7B/67B)"},{"d":"2023-11-30","l":"Qwen","m":"Qwen-72B"},{"d":"2023-12-06","l":"Google DeepMind","m":"Gemini 1.0 (Ultra/Pro/Nano)"},{"d":"2023-12-11","l":"Mistral","m":"Mixtral 8x7B / Mistral Medium"},{"d":"2024-02-04","l":"Qwen","m":"Qwen1.5"},{"d":"2024-02-15","l":"Google DeepMind","m":"Gemini 1.5 Pro"},{"d":"2024-02-26","l":"Mistral","m":"Mistral Large"},{"d":"2024-03-04","l":"Anthropic","m":"Claude 3 (Opus/Sonnet/Haiku)"},{"d":"2024-03-28","l":"xAI","m":"Grok 1.5"},{"d":"2024-04-17","l":"Mistral","m":"Mixtral 8x22B"},{"d":"2024-04-18","l":"Meta","m":"Llama 3 (8B/70B)"},{"d":"2024-05-06","l":"DeepSeek","m":"DeepSeek-V2"},{"d":"2024-05-13","l":"OpenAI","m":"GPT-4o"},{"d":"2024-05-14","l":"Google DeepMind","m":"Gemini 1.5 Flash"},{"d":"2024-06-07","l":"Qwen","m":"Qwen2"},{"d":"2024-06-20","l":"Anthropic","m":"Claude 3.5 Sonnet"},{"d":"2024-07-18","l":"OpenAI","m":"GPT-4o mini"},{"d":"2024-07-23","l":"Meta","m":"Llama 3.1 (405B)"},{"d":"2024-07-24","l":"Mistral","m":"Mistral Large 2"},{"d":"2024-08-13","l":"xAI","m":"Grok 2 (beta)"},{"d":"2024-09-12","l":"OpenAI","m":"o1-preview / o1-mini"},{"d":"2024-09-19","l":"Qwen","m":"Qwen2.5"},{"d":"2024-09-24","l":"Google DeepMind","m":"Gemini 1.5 Pro/Flash-002"},{"d":"2024-09-25","l":"Meta","m":"Llama 3.2 (Vision + edge)"},{"d":"2024-10-22","l":"Anthropic","m":"Claude 3.5 Sonnet (new) / 3.5 Haiku"},{"d":"2024-11-18","l":"Mistral","m":"Pixtral Large"},{"d":"2024-11-28","l":"Qwen","m":"QwQ-32B-Preview"},{"d":"2024-12-05","l":"OpenAI","m":"o1 / o1 pro"},{"d":"2024-12-06","l":"Meta","m":"Llama 3.3 70B"},{"d":"2024-12-11","l":"Google DeepMind","m":"Gemini 2.0 Flash (exp)"},{"d":"2024-12-14","l":"xAI","m":"Grok 2 (GA)"},{"d":"2024-12-26","l":"DeepSeek","m":"DeepSeek-V3"},{"d":"2025-01-20","l":"DeepSeek","m":"DeepSeek-R1"},{"d":"2025-01-30","l":"Mistral","m":"Mistral Small 3"},{"d":"2025-01-31","l":"OpenAI","m":"o3-mini"},{"d":"2025-02-05","l":"Google DeepMind","m":"Gemini 2.0 Flash GA / 2.0 Pro"},{"d":"2025-02-17","l":"xAI","m":"Grok 3"},{"d":"2025-02-24","l":"Anthropic","m":"Claude 3.7 Sonnet"},{"d":"2025-02-27","l":"OpenAI","m":"GPT-4.5"},{"d":"2025-03-24","l":"DeepSeek","m":"DeepSeek-V3-0324"},{"d":"2025-03-25","l":"Google DeepMind","m":"Gemini 2.5 Pro"},{"d":"2025-04-05","l":"Meta","m":"Llama 4 Scout / Maverick"},{"d":"2025-04-09","l":"Google DeepMind","m":"Gemini 2.5 Flash"},{"d":"2025-04-14","l":"OpenAI","m":"GPT-4.1 family"},{"d":"2025-04-16","l":"OpenAI","m":"o3 / o4-mini"},{"d":"2025-04-28","l":"Qwen","m":"Qwen3"},{"d":"2025-05-07","l":"Mistral","m":"Mistral Medium 3"},{"d":"2025-05-22","l":"Anthropic","m":"Claude Opus 4 / Sonnet 4"},{"d":"2025-05-28","l":"DeepSeek","m":"DeepSeek-R1-0528"},{"d":"2025-06-10","l":"Mistral","m":"Magistral Small / Medium"},{"d":"2025-06-10","l":"OpenAI","m":"o3-pro"},{"d":"2025-06-17","l":"Google DeepMind","m":"Gemini 2.5 Pro/Flash GA"},{"d":"2025-07-09","l":"xAI","m":"Grok 4"},{"d":"2025-07-22","l":"Google DeepMind","m":"Gemini 2.5 Flash-Lite GA"},{"d":"2025-07-22","l":"Qwen","m":"Qwen3-Coder"},{"d":"2025-08-05","l":"Anthropic","m":"Claude Opus 4.1"},{"d":"2025-08-05","l":"OpenAI","m":"gpt-oss-120b / 20b"},{"d":"2025-08-07","l":"OpenAI","m":"GPT-5"},{"d":"2025-08-12","l":"Mistral","m":"Mistral Medium 3.1"},{"d":"2025-08-21","l":"DeepSeek","m":"DeepSeek-V3.1"},{"d":"2025-08-28","l":"xAI","m":"grok-code-fast-1"},{"d":"2025-09-19","l":"xAI","m":"Grok 4 Fast"},{"d":"2025-09-24","l":"Qwen","m":"Qwen3-Max"},{"d":"2025-09-29","l":"Anthropic","m":"Claude Sonnet 4.5"},{"d":"2025-09-29","l":"DeepSeek","m":"DeepSeek-V3.2-Exp"},{"d":"2025-10-15","l":"Anthropic","m":"Claude Haiku 4.5"},{"d":"2025-11-12","l":"OpenAI","m":"GPT-5.1"},{"d":"2025-11-13","l":"OpenAI","m":"GPT-5.1-Codex-Max"},{"d":"2025-11-17","l":"xAI","m":"Grok 4.1 / 4.1 Fast"},{"d":"2025-11-18","l":"Google DeepMind","m":"Gemini 3 Pro / Deep Think"},{"d":"2025-11-24","l":"Anthropic","m":"Claude Opus 4.5"},{"d":"2025-12-01","l":"DeepSeek","m":"DeepSeek-V3.2"},{"d":"2025-12-02","l":"Mistral","m":"Mistral Large 3 / Ministral 3"},{"d":"2025-12-11","l":"OpenAI","m":"GPT-5.2"},{"d":"2025-12-17","l":"Google DeepMind","m":"Gemini 3 Flash"},{"d":"2026-01-14","l":"OpenAI","m":"GPT-5.2-Codex"},{"d":"2026-01-23","l":"Qwen","m":"Qwen3-Max-2026-01-23"},{"d":"2026-02-05","l":"Anthropic","m":"Claude Opus 4.6"},{"d":"2026-02-12","l":"Google DeepMind","m":"Gemini 3 Deep Think (upgraded)"},{"d":"2026-02-15","l":"Qwen","m":"Qwen3.5"},{"d":"2026-02-17","l":"Anthropic","m":"Claude Sonnet 4.6"},{"d":"2026-02-19","l":"Google DeepMind","m":"Gemini 3.1 Pro"},{"d":"2026-02-24","l":"OpenAI","m":"GPT-5.3-Codex"},{"d":"2026-03-03","l":"Google DeepMind","m":"Gemini 3.1 Flash-Lite (preview)"},{"d":"2026-03-03","l":"OpenAI","m":"GPT-5.3 Chat"},{"d":"2026-03-05","l":"OpenAI","m":"GPT-5.4"},{"d":"2026-03-09","l":"xAI","m":"Grok 4.20"},{"d":"2026-03-16","l":"Mistral","m":"Mistral Small 4"},{"d":"2026-03-17","l":"OpenAI","m":"GPT-5.4 mini / nano"},{"d":"2026-04-08","l":"Meta","m":"Muse Spark"},{"d":"2026-04-16","l":"Anthropic","m":"Claude Opus 4.7"},{"d":"2026-04-17","l":"xAI","m":"Grok 4.3"},{"d":"2026-04-23","l":"OpenAI","m":"GPT-5.5 / 5.5 Pro"},{"d":"2026-04-24","l":"DeepSeek","m":"DeepSeek-V4 Pro / Flash"},{"d":"2026-04-28","l":"Mistral","m":"Mistral Medium 3.5"},{"d":"2026-04-29","l":"Qwen","m":"Qwen3.6 family"},{"d":"2026-05-08","l":"Google DeepMind","m":"Gemini 3.1 Flash-Lite GA"},{"d":"2026-05-19","l":"Google DeepMind","m":"Gemini 3.5 Flash"},{"d":"2026-05-19","l":"xAI","m":"Grok Build 0.1"},{"d":"2026-05-20","l":"Qwen","m":"Qwen3.7 Max / Plus"},{"d":"2026-05-28","l":"Anthropic","m":"Claude Opus 4.8"},{"d":"2026-06-01","l":"xAI","m":"Composer 2.5"},{"d":"2026-06-09","l":"Anthropic","m":"Claude Fable 5 / Mythos 5"},{"d":"2026-06-26","l":"OpenAI","m":"GPT-5.6 Sol / Terra / Luna"},{"d":"2026-06-30","l":"Anthropic","m":"Claude Sonnet 5"},{"d":"2026-06-30","l":"Google DeepMind","m":"Gemini Omni Flash"},{"d":"2026-07-08","l":"xAI","m":"Grok 4.5"},{"d":"2026-07-09","l":"Meta","m":"Muse Spark 1.1"},{"d":"2026-07-21","l":"Google DeepMind","m":"Gemini 3.6 Flash / 3.5 Flash-Lite"},{"d":"2026-07-24","l":"Anthropic","m":"Claude Opus 5"},{"d":"2026-07-31","l":"DeepSeek","m":"DeepSeek-V4-Flash-0731"},{"d":"2026-08-02","l":"Qwen","m":"Qwen3.8-Max"},{"d":"2026-08-05","l":"Meta","m":"Muse Spark 1.2"},{"d":"2026-08-10","l":"Meta","m":"Muse Glimmer 30B"},{"d":"2026-08-10","l":"OpenAI","m":"GPT-5.6-Cyber"},{"d":"2026-08-12","l":"xAI","m":"Grok 4.6"},{"d":"2026-08-13","l":"DeepSeek","m":"DeepSeek-V4-Pro-0813"},{"d":"2026-08-13","l":"Google DeepMind","m":"Gemini 3.7 Flash"},{"d":"2026-08-14","l":"Qwen","m":"Qwen3.8-27B"},{"d":"2026-08-26","l":"Qwen","m":"Qwen3.8-Flash-Next"},{"d":"2026-09-01","l":"Anthropic","m":"Claude Fable 5.1 / Mythos 5.1"},{"d":"2026-09-02","l":"Google DeepMind","m":"Gemini 3.8 Flash / 3.8 Flash Cyber"},{"d":"2026-09-02","l":"Meta","m":"Muse Spark 1.3"},{"d":"2026-09-02","l":"Qwen","m":"Qwen3.8-Max-0902"},{"d":"2026-09-03","l":"OpenAI","m":"GPT-6 Astra"},{"d":"2026-09-10","l":"DeepSeek","m":"DeepSeek-V4.1-Flash"},{"d":"2026-09-18","l":"Qwen","m":"Qwen3.8-Omni-Flash"},{"d":"2026-09-21","l":"xAI","m":"Grok 4.7"},{"d":"2026-09-22","l":"Anthropic","m":"Claude Opus 5.5"},{"d":"2026-09-22","l":"OpenAI","m":"GPT-6 Sol / Luna"},{"d":"2026-09-28","l":"Anthropic","m":"Claude Sonnet 5.5"},{"d":"2026-09-29","l":"OpenAI","m":"GPT-6.1 Sol"},{"d":"2026-09-30","l":"Google DeepMind","m":"Gemini 4 Argon"},{"d":"2026-10-06","l":"Mistral","m":"Mistral Large 4"}];
+(function(){
+  if(location.hash === "#dark") document.documentElement.setAttribute("data-theme","dark");
+
+  const DAY = 86400000;
+  const YEARS = ["2023","2024","2025","2026"];
+  const MONS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const COUNTED_TO = Date.UTC(2026,9,8);
+  const LABNAME = {"Google DeepMind":"Google","Qwen":"Alibaba (Qwen)"};
+  const PHRASE = {"2023":"About once a month","2024":"About once a fortnight","2025":"About once a week","2026":"Every five days or so"};
+  const COMPARE = {
+    "2023":"The starting line. ChatGPT launched a month before, on 30 Nov 2022.",
+    "2024":"Almost twice as often as in 2023.",
+    "2025":"Nearly three times as often as in 2023.",
+    "2026":"Nearly five times as often as in 2023."
+  };
+  const SCALE_MAX = 30;
+  const TICKS = [[7,"1 week"],[14,"2 weeks"],[30,"1 month"]];
+  const fmtDate = function(iso){ const p = iso.split("-").map(Number); return p[2] + " " + MONS[p[1]-1] + " " + p[0]; };
+  const labName = function(l){ return LABNAME[l] || l; };
+
+  const S = {};
+  YEARS.forEach(function(y){
+    const rows = RAW.filter(function(r){ return r.d.slice(0,4) === y; });
+    const from = Date.UTC(+y,0,1);
+    const to = y === "2026" ? COUNTED_TO + DAY : Date.UTC(+y+1,0,1);
+    S[y] = {rows:rows, n:rows.length, every:(to - from) / DAY / rows.length};
+  });
+
+  const slide = document.querySelector(".slide");
+  const per = {}; let mx = 1;
+  RAW.forEach(function(r){ const k = r.d.slice(0,7); per[k] = (per[k]||0) + 1; if(per[k] > mx) mx = per[k]; });
+  slide.style.setProperty("--rows", mx);
+
+  const ans = document.getElementById("s-answer");
+  const wb = document.getElementById("s-wbars");
+  const monthsEl = document.getElementById("s-months");
+  const pick = document.getElementById("s-pick");
+  const yearBtns = Array.prototype.slice.call(document.querySelectorAll("#s-years .yr"));
+  const playBtn = document.getElementById("s-play");
+  let cur = "2023", timer = null;
+
+  let html = '<div class="wgrid">' + TICKS.map(function(t){ return '<span class="wtick" style="left:' + (t[0]/SCALE_MAX*100) + '%"></span>'; }).join("") + '</div>';
+  YEARS.forEach(function(y, i){
+    const pct = Math.min(100, S[y].every / SCALE_MAX * 100);
+    html += '<span class="wy" data-wy="' + y + '" style="grid-row:' + (i+1) + '">' + y + '</span>'
+      + '<div class="wtrack" data-wt="' + y + '" style="grid-row:' + (i+1) + '"><div class="wfill" style="width:' + pct + '%"></div>'
+      + '<span class="wlbl" style="left:calc(' + pct + '% + .7cqw)">' + Math.round(S[y].every) + ' days</span></div>';
+  });
+  html += '<div class="wscale" style="grid-row:5">' + TICKS.map(function(t){ return '<span style="left:' + (t[0]/SCALE_MAX*100) + '%">' + t[1] + '</span>'; }).join("") + '</div>';
+  wb.innerHTML = html;
+
+  function render(y){
+    cur = y;
+    const s = S[y];
+    yearBtns.forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.y === y)); });
+    const counted = y === "2026" ? '<b>' + s.n + '</b> new models by 8 October.' : '<b>' + s.n + '</b> new models that year.';
+    ans.innerHTML = '<div class="swap"><p class="ans-when">' + (y === "2026" ? "In 2026 so far" : "In " + y) + '</p>'
+      + '<p class="ans-big">' + PHRASE[y] + '</p>'
+      + '<p class="ans-sub">' + counted + ' That&rsquo;s one every <b>' + Math.round(s.every) + ' days</b>.</p>'
+      + '<p class="ans-x">' + COMPARE[y] + '</p></div>';
+    YEARS.forEach(function(k){
+      wb.querySelector('[data-wy="' + k + '"]').classList.toggle("on", k === y);
+      wb.querySelector('[data-wt="' + k + '"]').classList.toggle("on", k === y);
+    });
+    const byMon = MONS.map(function(){ return []; });
+    s.rows.forEach(function(r){ byMon[+r.d.slice(5,7) - 1].push(r); });
+    let k = 0;
+    monthsEl.innerHTML = byMon.map(function(list, mi){
+      const future = y === "2026" && mi > 9;
+      const dots = list.map(function(r){
+        const label = (r.m + ", " + labName(r.l) + ", " + fmtDate(r.d)).replace(/"/g,"&quot;");
+        return '<button class="d2" style="animation-delay:' + ((k++) * 16) + 'ms" data-i="' + RAW.indexOf(r) + '" aria-label="' + label + '"></button>';
+      }).join("");
+      return '<div class="mon' + (future ? ' future' : '') + '"' + (future ? ' title="After our count"' : '') + '><div class="stack">' + dots + '</div><span class="mlbl">' + MONS[mi] + '</span></div>';
+    }).join("");
+    pick.innerHTML = "Point at a dot to see which model it was";
+  }
+
+  function showPick(btn){
+    const r = RAW[+btn.dataset.i];
+    monthsEl.querySelectorAll(".d2.sel").forEach(function(d){ d.classList.remove("sel"); });
+    btn.classList.add("sel");
+    pick.innerHTML = '<b>' + r.m + '</b> &middot; ' + labName(r.l) + ' &middot; ' + fmtDate(r.d);
+  }
+  ["mouseover","focusin","click"].forEach(function(ev){
+    monthsEl.addEventListener(ev, function(e){ const b = e.target.closest(".d2"); if(b) showPick(b); });
+  });
+
+  function stop(){
+    if(timer){ clearInterval(timer); timer = null; }
+    playBtn.querySelector("span").textContent = "Play";
+    playBtn.setAttribute("aria-label", "Play through the years");
+  }
+  function play(){
+    stop(); render("2023");
+    let i = 0;
+    playBtn.querySelector("span").textContent = "Stop";
+    playBtn.setAttribute("aria-label", "Stop playing");
+    timer = setInterval(function(){ i++; if(i >= YEARS.length){ stop(); return; } render(YEARS[i]); }, 2800);
+  }
+  playBtn.addEventListener("click", function(){ timer ? stop() : play(); });
+  yearBtns.forEach(function(b){ b.addEventListener("click", function(){ stop(); render(b.dataset.y); }); });
+
+  document.addEventListener("keydown", function(e){
+    const i = YEARS.indexOf(cur);
+    if(e.key === "ArrowRight" && i < YEARS.length - 1){ e.preventDefault(); stop(); render(YEARS[i+1]); }
+    else if(e.key === "ArrowLeft" && i > 0){ e.preventDefault(); stop(); render(YEARS[i-1]); }
+  });
+
+  render("2023");
+})();
+</script>
+</body>
+</html>
